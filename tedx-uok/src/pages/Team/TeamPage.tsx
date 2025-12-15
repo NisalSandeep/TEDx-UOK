@@ -12,10 +12,10 @@ interface TeamMember {
 }
 
 interface TeamPageProps {
-  teamMembers: TeamMember[];
+  teamMembers?: TeamMember[];
 }
 
-const TeamPage: React.FC<TeamPageProps> = ({ teamMembers }) => {
+const TeamPage: React.FC<TeamPageProps> = ({ teamMembers = [] }) => {
   const licensees = teamMembers.filter(member => member.type === 'Licensee');
   const executiveCommittee = teamMembers.filter(member => member.type === 'EXCO');
   const directors = teamMembers.filter(member => member.type === 'Director');

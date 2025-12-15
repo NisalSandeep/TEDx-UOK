@@ -10,10 +10,10 @@ interface Partner {
 }
 
 interface PartnersPageProps {
-  partners: Partner[];
+  partners?: Partner[];
 }
 
-const PartnersPage: React.FC<PartnersPageProps> = ({ partners }) => {
+const PartnersPage: React.FC<PartnersPageProps> = ({ partners = [] }) => {
   const activePartners = partners.filter((p) => p.isActive ?? true);
 
   const partnersByTier = {
