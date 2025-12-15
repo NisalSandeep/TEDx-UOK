@@ -1,4 +1,5 @@
 import React from 'react';
+import Wordmark from '../../components/ui/Wordmark';
 import { sharedStyles } from '../../utils/constants';
 
 interface TeamMember {
@@ -76,8 +77,7 @@ const TeamPage: React.FC<TeamPageProps> = ({ teamMembers = [] }) => {
           <div className={sharedStyles.layout.heroGrid}>
             <div>
               <h1 className={`${sharedStyles.typography.heroTitle} mb-4`}>
-                <span className={sharedStyles.colors.tedxRed}>TEDx</span>
-                <span className={sharedStyles.colors.white}>UOK</span>
+                <Wordmark event="UOK" />
               </h1>
               <h2 className={`${sharedStyles.typography.heroTitle} ${sharedStyles.colors.white}`}>Team</h2>
             </div>

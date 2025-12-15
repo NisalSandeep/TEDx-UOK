@@ -1,5 +1,7 @@
 import React from 'react';
 import { sharedStyles } from '../../utils/constants';
+import Button from '../../components/ui/Button';
+import Wordmark from '../../components/ui/Wordmark';
 
 interface Partner {
   id: string;
@@ -77,12 +79,11 @@ const PartnersPage: React.FC<PartnersPageProps> = ({ partners = [] }) => {
         <div className={sharedStyles.layout.heroContainer}>
           <div className={sharedStyles.layout.heroGrid}>
             <div>
-              <h1 className={`${sharedStyles.typography.heroTitle} mb-4`}>
-                <span className={sharedStyles.colors.tedxRed}>TEDx</span>
-                <span className={sharedStyles.colors.white}>UOK</span>
-              </h1>
-              <h2 className={`${sharedStyles.typography.heroTitle} ${sharedStyles.colors.white}`}>Partners</h2>
-            </div>
+                <h1 className={`${sharedStyles.typography.heroTitle} mb-4`}>
+                  <Wordmark event="UOK" />
+                </h1>
+                <h2 className={`${sharedStyles.typography.heroTitle} ${sharedStyles.colors.white}`}>Partners</h2>
+              </div>
             <div className="flex items-center justify-start lg:justify-end">
               <p className={`${sharedStyles.typography.description} max-w-md lg:text-right`}>
                 Tiered showcases and equal spotlight for every collaborator.
@@ -114,9 +115,7 @@ const PartnersPage: React.FC<PartnersPageProps> = ({ partners = [] }) => {
           <h2 className={`text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-8`}>
             Join us at <span className={sharedStyles.colors.tedxRed}>TEDx</span>UOK 2026
           </h2>
-          <button className="btn btn-primary px-10 py-4">
-            Register Now
-          </button>
+          <Button className="px-10 py-4" variant="primary">Register Now</Button>
         </div>
       </section>
     </main>
