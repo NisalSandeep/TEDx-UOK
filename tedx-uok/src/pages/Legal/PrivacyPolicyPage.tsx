@@ -12,7 +12,7 @@ export default function PrivacyPolicyPage() {
             </h1>
           </div>
 
-          {/* Content */}
+          {/* Contented */}
           <div className="space-y-8 text-white leading-relaxed text-center">
             <p className="text-lg">
               TEDx UOK is committed to protecting your privacy. This policy
