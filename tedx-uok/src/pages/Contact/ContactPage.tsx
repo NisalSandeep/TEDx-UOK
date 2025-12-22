@@ -21,10 +21,10 @@ interface FormErrors {
 
 export const ContactPage: React. FC = () => {
   const [formData, setFormData] = useState<ContactFormData>({
-    name: "",
-    email: "",
-    message: "",
-    category: "",
+    name: '',
+    email:  '',
+    message: '',
+    category: '',
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
@@ -36,20 +36,20 @@ export const ContactPage: React. FC = () => {
 
   // Set body background to black when component mounts
   useEffect(() => {
-    document.body. style. backgroundColor = '#000000';
-    document. body.style. margin = '0';
+    document.body.style.backgroundColor = '#000000';
+    document.body.style.margin = '0';
     document. body.style.padding = '0';
-    document. documentElement.  style.backgroundColor = '#000000';
+    document.documentElement. style.backgroundColor = '#000000';
     
     return () => {
       // Cleanup when component unmounts
       document.body.style.backgroundColor = '';
-      document.  documentElement.style.backgroundColor = '';
+      document. documentElement.style.backgroundColor = '';
     };
   }, []);
 
   const categoryOptions = [
-    { value:   'general', label: 'General Inquiry' },
+    { value:  'general', label: 'General Inquiry' },
     { value: 'sponsorship', label: 'Sponsorship' },
     { value: 'partnership', label: 'Partnership' },
     { value: 'media', label: 'Media & Press' },
@@ -69,7 +69,7 @@ export const ContactPage: React. FC = () => {
     // Validate name
     if (!formData. name.trim()) {
       newErrors.name = 'Name is required';
-    } else if (formData.  name.trim().length < 2) {
+    } else if (formData. name.trim().length < 2) {
       newErrors.name = 'Name must be at least 2 characters';
     }
 
@@ -81,7 +81,7 @@ export const ContactPage: React. FC = () => {
     }
 
     // Validate message
-    if (! formData.message.  trim()) {
+    if (!formData.message. trim()) {
       newErrors.message = 'Message is required';
     } else if (formData.message.trim().length < 10) {
       newErrors.message = "Message must be at least 10 characters";
@@ -90,7 +90,7 @@ export const ContactPage: React. FC = () => {
     // Category is optional, no validation needed
 
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    return Object. keys(newErrors).length === 0;
   };
 
   const handleChange = (name: string, value: string) => {
@@ -108,7 +108,7 @@ export const ContactPage: React. FC = () => {
     }
   };
 
-  const handleSubmit = async (e:  React.  FormEvent) => {
+  const handleSubmit = async (e:  React.FormEvent) => {
     e.preventDefault();
     setSubmitMessage(null);
 
@@ -130,13 +130,13 @@ export const ContactPage: React. FC = () => {
       console.log("Contact Data:", formData);
 
       setSubmitMessage({
-        type:   'success',
-        text:   'Thank you for contacting us! We will get back to you soon.',
+        type:  'success',
+        text:  'Thank you for contacting us! We will get back to you soon.',
       });
 
       // Reset form after successful submission
       setFormData({
-        name:   '',
+        name:  '',
         email: '',
         message: '',
         category:  '',
@@ -156,12 +156,12 @@ export const ContactPage: React. FC = () => {
     <>
       <style>{`
         body, html, #root {
-          background-color:   #000000 !important;
-          margin: 0 ! important;
-          padding: 0 ! important;
+          background-color:  #000000 !important;
+          margin: 0 !important;
+          padding: 0 !important;
         }
         * {
-          letter-spacing: 0 !important;
+          letter-spacing:  0 !important;
         }
       `}</style>
 
@@ -172,19 +172,19 @@ export const ContactPage: React. FC = () => {
           width: '100%',
           position: 'absolute',
           top: 0,
-          left:  0,
+          left: 0,
           right: 0,
-          bottom:  0,
+          bottom: 0,
         }}
       >
-        <div className="min-h-screen bg-black py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:  px-8">
+        <div className="min-h-screen bg-black py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg: px-8">
           <div className="max-w-3xl mx-auto w-full">
             <div className="text-center mb-12">
-              <h1 className="text-3xl sm:text-4xl md:  text-5xl font-bold mb-4" style={{ color: '#FFFFFF', letterSpacing: '0' }}>
+              <h1 className="text-3xl sm:text-4xl md: text-5xl font-bold mb-4" style={{ color: '#FFFFFF', letterSpacing: '0' }}>
                 Contact <span style={{ color: '#EB0028' }}>Us</span>
               </h1>
               <p className="text-lg" style={{ color: '#FFFFFF', letterSpacing: '0' }}>
-                Have questions?   We'd love to hear from you
+                Have questions? We'd love to hear from you
               </p>
             </div>
 
@@ -192,7 +192,7 @@ export const ContactPage: React. FC = () => {
               {submitMessage && (
                 <div className="mb-6">
                   <FormMessage
-                    type={submitMessage.  type}
+                    type={submitMessage. type}
                     message={submitMessage.text}
                     onClose={() => setSubmitMessage(null)}
                   />
@@ -217,8 +217,8 @@ export const ContactPage: React. FC = () => {
                   type="email"
                   value={formData.email}
                   onChange={handleChange}
-                  placeholder="your. email@example.com"
-                  error={errors. email}
+                  placeholder="your.email@example.com"
+                  error={errors.email}
                   required
                 />
 
@@ -252,7 +252,7 @@ export const ContactPage: React. FC = () => {
               </form>
 
               <div className="mt-6 text-center">
-                <p className="text-gray-500 text-sm" style={{ letterSpacing:   '0' }}>
+                <p className="text-gray-500 text-sm" style={{ letterSpacing:  '0' }}>
                   We typically respond within 24-48 hours
                 </p>
               </div>

@@ -19,7 +19,7 @@ interface FormErrors {
   ticket_type?: string;
 }
 
-export const RegistrationPage: React. FC = () => {
+export const RegistrationPage: React.  FC = () => {
   const [formData, setFormData] = useState<RegistrationFormData>({
     full_name:  '',
     email: '',
@@ -37,15 +37,15 @@ export const RegistrationPage: React. FC = () => {
 
   // Set body background to black when component mounts
   useEffect(() => {
-    document.body. style.backgroundColor = '#000000';
-    document.body.style. margin = '0';
-    document. body.style.padding = '0';
-    document. documentElement.style.backgroundColor = '#000000';
+    document.body.  style.backgroundColor = '#000000';
+    document.body.style.  margin = '0';
+    document.  body.style.padding = '0';
+    document.  documentElement.style.backgroundColor = '#000000';
     
     return () => {
       // Cleanup when component unmounts
       document.body.style.backgroundColor = '';
-      document. documentElement.style.backgroundColor = '';
+      document.  documentElement.style.backgroundColor = '';
     };
   }, []);
 
@@ -70,24 +70,24 @@ export const RegistrationPage: React. FC = () => {
     const newErrors: FormErrors = {};
 
     // Validate full_name
-    if (!formData. full_name.trim()) {
-      newErrors.full_name = 'Full name is required';
-    } else if (formData.full_name.trim().length < 2) {
-      newErrors.full_name = "Name must be at least 2 characters";
+    if (!formData.  full_name.trim()) {
+      newErrors. full_name = 'Full name is required';
+    } else if (formData.full_name. trim().length < 2) {
+      newErrors.full_name = 'Name must be at least 2 characters';
     }
 
     // Validate email
     if (!formData.email.trim()) {
       newErrors.email = 'Email is required';
-    } else if (!validateEmail(formData. email)) {
+    } else if (!validateEmail(formData.  email)) {
       newErrors.email = 'Please enter a valid email address';
     }
 
     // Validate phone
-    if (! formData.phone.trim()) {
+    if (!  formData.phone.trim()) {
       newErrors.phone = 'Phone number is required';
-    } else if (!validatePhone(formData.phone)) {
-      newErrors.phone = "Please enter a valid phone number";
+    } else if (!validatePhone(formData. phone)) {
+      newErrors.phone = 'Please enter a valid phone number';
     }
 
     // Validate ticket_type
@@ -96,7 +96,7 @@ export const RegistrationPage: React. FC = () => {
     }
 
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    return Object. keys(newErrors).length === 0;
   };
 
   const handleChange = (name: string, value: string) => {
@@ -114,7 +114,7 @@ export const RegistrationPage: React. FC = () => {
     }
   };
 
-  const handleSubmit = async (e:  React.FormEvent) => {
+  const handleSubmit = async (e:   React.FormEvent) => {
     e.preventDefault();
     setSubmitMessage(null);
 
@@ -136,16 +136,16 @@ export const RegistrationPage: React. FC = () => {
       console.log("Registration Data:", formData);
 
       setSubmitMessage({
-        type: "success",
-        text: "Registration successful! Check your email for confirmation.",
+        type:  'success',
+        text:  'Registration successful! Check your email for confirmation.',
       });
 
       // Reset form after successful submission
       setFormData({
         full_name: '',
         email: '',
-        phone:  '',
-        ticket_type: '',
+        phone:   '',
+        ticket_type:  '',
         event_id: 'EVENT_001',
       });
       setErrors({});
@@ -165,7 +165,7 @@ export const RegistrationPage: React. FC = () => {
         body, html, #root {
           background-color: #000000 !important;
           margin: 0 !important;
-          padding: 0 ! important;
+          padding: 0 !  important;
         }
         * {
           letter-spacing: 0 !important;
@@ -179,12 +179,12 @@ export const RegistrationPage: React. FC = () => {
           width: '100%',
           position: 'absolute',
           top: 0,
-          left:  0,
+          left:   0,
           right: 0,
-          bottom:  0,
+          bottom:   0,
         }}
       >
-        <div className="min-h-screen bg-black py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-black py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg: px-8">
           <div className="max-w-3xl mx-auto w-full">
             <div className="text-center mb-12">
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4" style={{ color: '#FFFFFF', letterSpacing: '0' }}>
@@ -227,7 +227,7 @@ export const RegistrationPage: React. FC = () => {
                   type="email"
                   value={formData.email}
                   onChange={handleChange}
-                  placeholder="your. email@example.com"
+                  placeholder="your.  email@example.com"
                   error={errors.email}
                   required
                 />
