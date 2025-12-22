@@ -1,10 +1,5 @@
-import AppRouter from './routes/AppRouter'
-import './App.css'
+import AppRouter from "./routes/AppRouter";
 
-function App() {
-  return (
-    <AppRouter />
-  )
+export default function App() {
+  return <AppRouter/>;
 }
-
-export default App
