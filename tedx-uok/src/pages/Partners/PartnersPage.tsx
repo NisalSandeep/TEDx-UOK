@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { Linkedin, Crown, Medal, HandHeart } from 'lucide-react';
-import { sharedStyles } from '../../utils/constants';
-import { supabase } from '../../lib/supabase';
-import { getSupabaseStorageUrl } from '../../lib/utils';
-import Loading from '../../components/ui/Loading';
+import React, { useState, useEffect } from "react";
+import { Linkedin, Crown, Medal, HandHeart } from "lucide-react";
+import { sharedStyles } from "../../utils/constants";
+import { supabase } from "../../lib/supabase";
+import { getSupabaseStorageUrl } from "../../lib/utils";
+import Loading from "../../components/ui/Loading";
 import { useSEO } from "../../hooks/useSEO";
 
 interface Partner {
@@ -20,11 +20,11 @@ const PartnersPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   useSEO({
     title: "Our Partners - Collaborators & Supporters | TEDxUOK",
-    description: "Explore the esteemed partners of TEDxUOK, showcasing our valued collaborators across Title, Gold, Silver, Bronze, and In-kind tiers."
+    description:
+      "Explore the esteemed partners of TEDxUOK, showcasing our valued collaborators across Title, Gold, Silver, Bronze, and In-kind tiers.",
   });
 
   useEffect(() => {
-
     const fetchPartners = async () => {
       const { data, error } = await supabase
         .from("partners")
@@ -42,10 +42,11 @@ const PartnersPage: React.FC = () => {
           name: p.name || "",
           tier: (p.tier as Partner["tier"]) || "Bronze",
           logo_url: p.logo_url
-            ? (String(p.logo_url).startsWith('http') || String(p.logo_url).startsWith('/')
+            ? String(p.logo_url).startsWith("http") ||
+              String(p.logo_url).startsWith("/")
               ? String(p.logo_url)
-              : getSupabaseStorageUrl(partnerBucket, String(p.logo_url)))
-            : '',
+              : getSupabaseStorageUrl(partnerBucket, String(p.logo_url))
+            : "",
           linkedin_url: p.website_url || undefined, // assuming website_url is linkedin
           isActive: p.is_active ?? true,
         }));
@@ -246,7 +247,11 @@ const PartnersPage: React.FC = () => {
             More partners to be announced
           </div>
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-black mb-8 leading-tight">
-            Join us at <span className={sharedStyles.colors.tedxRed}>TED<sup>x</sup></span><span className={sharedStyles.colors.black}> UoK</span> 2026
+            Join us at{" "}
+            <span className={sharedStyles.colors.tedxRed}>
+              TED<sup>x</sup>
+            </span>
+            <span className={sharedStyles.colors.black}> UoK</span> 2026
           </h2>
           <button className="bg-gradient-to-r from-[#EB0028] to-[#d10022] text-white px-8 py-3 sm:px-10 sm:py-4 text-base sm:text-lg font-medium rounded-lg hover:from-[#d10022] hover:to-[#b8001e] transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
             Register Now
