@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { supabase } from '../../api/supabaseClient';
 import { FormInput } from '../../components/forms/FormInput';
 import { FormSelect } from '../../components/forms/FormSelect';
 import { SubmitButton } from '../../components/forms/SubmitButton';
@@ -8,6 +10,8 @@ interface RegistrationFormData {
   full_name: string;
   email: string;
   phone: string;
+  address: string;
+  city: string;
   ticket_type: string;
   event_id: string;
 }
@@ -16,14 +20,43 @@ interface FormErrors {
   full_name?: string;
   email?: string;
   phone?: string;
+  address?: string;
+  city?: string;
   ticket_type?: string;
 }
 
+// PayHere Redirect Helper
+// PayHere Redirect Helper
+const redirectToPayHere = (payload: any) => {
+  console.log("Starting PayHere Redirect with Payload:", payload);
+
+  const form = document.createElement("form");
+  form.setAttribute("method", "POST");
+  form.setAttribute("action", "https://sandbox.payhere.lk/pay/checkout");
+  form.setAttribute("style", "display: none;");
+
+  Object.keys(payload).forEach(key => {
+    const input = document.createElement("input");
+    input.setAttribute("type", "hidden");
+    input.setAttribute("name", key);
+    input.setAttribute("value", payload[key]);
+    form.appendChild(input);
+  });
+
+  document.body.appendChild(form);
+  form.submit();
+};
+
+
+
 export const RegistrationPage: React.FC = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState<RegistrationFormData>({
     full_name: '',
     email: '',
     phone: '',
+    address: '',
+    city: '',
     ticket_type: '',
     event_id: 'EVENT_001', // Hidden field - default event ID
   });
@@ -35,8 +68,19 @@ export const RegistrationPage: React.FC = () => {
     text: string;
   } | null>(null);
 
+  // DEBUG: Verify Supabase Connection
+  React.useEffect(() => {
+    supabase.auth.getSession().then(({ data, error }) => {
+      console.log("SUPABASE AUTH TEST:", data, error);
+    });
+  }, []);
+
+
+  /* PayHere SDK Removed - Using Direct Form Submission */
+
+
   const ticketOptions = [
-    { value: 'general', label: 'General Admission - LKR 1,000' },
+    { value: 'standard', label: 'Standard Ticket - LKR 1,000' },
     { value: 'vip', label: 'VIP - LKR 2,500' },
     { value: 'student', label: 'Student - LKR 500' },
     { value: 'early_bird', label: 'Early Bird - LKR 800' },
@@ -74,6 +118,16 @@ export const RegistrationPage: React.FC = () => {
       newErrors.phone = 'Phone number is required';
     } else if (!validatePhone(formData.phone)) {
       newErrors.phone = 'Please enter a valid phone number';
+    }
+
+    // Validate address
+    if (!formData.address.trim()) {
+      newErrors.address = 'Address is required';
+    }
+
+    // Validate city
+    if (!formData.city.trim()) {
+      newErrors.city = 'City is required';
     }
 
     // Validate ticket_type
@@ -115,30 +169,123 @@ export const RegistrationPage: React.FC = () => {
     setLoading(true);
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      // Log the form data (in production, this would be sent to backend)
-      console.log('Registration Data:', formData);
 
-      setSubmitMessage({
-        type: 'success',
-        text: 'Registration successful! Check your email for confirmation.',
+      // 1. Calculate Amount based on Ticket Type
+      let amount = 0;
+      let ticketName = "";
+
+      switch (formData.ticket_type) {
+        case 'standard':
+          amount = 1000;
+          ticketName = "General Admission";
+          break;
+        case 'vip':
+          amount = 2500;
+          ticketName = "VIP Ticket";
+          break;
+        case 'student':
+          amount = 500;
+          ticketName = "Student Ticket";
+          break;
+        case 'early_bird':
+          amount = 800;
+          ticketName = "Early Bird Ticket";
+          break;
+        default:
+          throw new Error("Invalid Ticket Type");
+      }
+
+      const currency = "LKR";
+      const formattedAmount = amount.toFixed(2);
+
+      // 2. Fetch Active Event
+      // FIX For "invalid input syntax for type uuid": Do NOT fallback to '1'.
+      const { data: eventData, error: eventError } = await supabase
+        .from('events')
+        .select('event_id')
+        .eq('is_active', true)
+        .limit(1)
+        .single();
+
+      if (eventError || !eventData) {
+        console.error("Fetch Event Error:", eventError);
+        throw new Error("No active event found. Cannot register.");
+      }
+
+      const eventId = eventData.event_id;
+      console.log("Using Active Event ID:", eventId);
+
+      // 3. Insert into Registrations
+      console.log("Creating Registration...");
+      // DO NOT send explicit registration_id. Let DB generate it.
+      const { data: regData, error: regError } = await supabase
+        .from('registrations')
+        .insert({
+          event_id: eventId,
+          full_name: formData.full_name,
+          email: formData.email,
+          phone: formData.phone,
+          address: formData.address,
+          city: formData.city,
+          ticket_type: formData.ticket_type,
+        })
+        .select('registration_id')
+        .single();
+
+      if (regError || !regData) {
+        throw new Error(`Registration Failed: ${regError?.message}`);
+      }
+
+      const registrationId = regData.registration_id;
+      console.log("Registration Created:", registrationId);
+
+      // 4. Insert into Payments
+      console.log("Creating Payment Record...");
+      const { data: payData, error: payError } = await supabase
+        .from('payments')
+        .insert({
+          registration_id: registrationId,
+          amount: amount,
+          currency: currency
+        })
+        .select('payment_id')
+        .single();
+
+      if (payError || !payData) {
+        throw new Error(`Payment Record Failed: ${payError?.message}`);
+      }
+
+      const paymentId = payData.payment_id;
+      console.log("Payment Record Created:", paymentId);
+
+      // 5. Redirect to PayHere
+      // 5. Call Edge Function to Get Secure PayHere Payload
+      console.log("Invoking Edge Function to get PayHere Hash...");
+      setSubmitMessage({ type: 'success', text: 'Securing Payment...' });
+
+      const { data: payHerePayload, error: funcError } = await supabase.functions.invoke('create-payhere-payment', {
+        body: { payment_id: paymentId }
       });
+      if (funcError) {
+        throw new Error(`Payment Function Failed: ${funcError.message}`);
+      }
+      if (payHerePayload && payHerePayload.error) {
+        throw new Error(`Payment Function Error: ${payHerePayload.error}`);
+      }
 
-      // Reset form after successful submission
-      setFormData({
-        full_name: '',
-        email: '',
-        phone: '',
-        ticket_type: '',
-        event_id: 'EVENT_001',
-      });
-      setErrors({});
-    } catch (error) {
+      // 6. Redirect to PayHere
+      setSubmitMessage({ type: 'success', text: 'Redirecting to Payment Gateway...' });
+
+      // Override return/cancel URLs to ensure they match frontend config if needed,
+      // but usually trusting the backend payload is better.
+      // We will blindly use the payload returned by the secure backend.
+      redirectToPayHere(payHerePayload);
+    } catch (error: any) {
+      console.error("Submission Error:", error);
       setSubmitMessage({
         type: 'error',
-        text: 'Something went wrong. Please try again.',
+        text: error.message || 'An unexpected error occurred during registration.',
       });
     } finally {
       setLoading(false);
@@ -205,6 +352,28 @@ export const RegistrationPage: React.FC = () => {
               required
             />
 
+            <FormInput
+              label="Address"
+              name="address"
+              type="text"
+              value={formData.address}
+              onChange={handleChange}
+              placeholder="House/Apt No, Street"
+              error={errors.address}
+              required
+            />
+
+            <FormInput
+              label="City"
+              name="city"
+              type="text"
+              value={formData.city}
+              onChange={handleChange}
+              placeholder="City"
+              error={errors.city}
+              required
+            />
+
             <FormSelect
               label="Ticket Type"
               name="ticket_type"
@@ -218,10 +387,15 @@ export const RegistrationPage: React.FC = () => {
 
             <div className="pt-4">
               <SubmitButton loading={loading}>
-                Complete Registration
+                {loading ? 'Processing...' : 'Proceed to Payment'}
               </SubmitButton>
             </div>
+
+            {/* Debug buttons removed */}
           </form>
+
+          {/* Hidden PayHere Form removed as we use JS SDK now */}
+
 
           <div className="mt-6 text-center">
             <p className="text-gray-500 text-sm">
